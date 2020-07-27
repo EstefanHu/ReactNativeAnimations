@@ -10,14 +10,12 @@ const Stack = createStackNavigator();
 
 const App = () => {
 
-  console.log('load');
-
   return (
     <SafeAreaProvider>
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{ header: () => null }}
-          initialRouteName={TransitionScreen}
+          initialRouteName={'TransitionScreen'}
         >
           <Stack.Screen
             name='HomeScreen'
