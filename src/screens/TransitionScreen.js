@@ -7,6 +7,10 @@ import {
   SafeAreaView,
   Dimensions,
 } from 'react-native';
+import {
+  Transition,
+  Transitioning,
+} from "react-native-reanimated";
 
 const { width } = Dimensions.get('window');
 const MARGIN = 5;
@@ -20,10 +24,10 @@ const styles = StyleSheet.create({
     marginHorizontal: MARGIN,
     marginVertical: 5,
     flex: 1,
-    height: 200,
   },
   button: {
-    padding: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
     width,
   }
 });
@@ -64,26 +68,36 @@ const wrap = {
 }
 
 const layouts = [column, row, wrap];
+const transition = (
+  <Transition.Change durationMS={400} interpolation="easeInOut" />
+);
 
 export const TransitionScreen = () => {
+  const ref = React.useRef(null);
   const [currentLayout, setCurrentLayout] = React.useState(layouts[0].layout);
-
-  console.log(currentLayout)
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={[styles.container, currentLayout.container]}>
+      <Transitioning.View
+        style={[styles.container, currentLayout.container]}
+        {...{ ref, transition }}
+      >
         <Card currentLayout={currentLayout} />
         <Card currentLayout={currentLayout} />
         <Card currentLayout={currentLayout} />
-      </View>
+      </Transitioning.View>
       <View style={{ width, justifyContent: 'center', alignItems: 'center' }}>
         {layouts.map(layout => (
           <TouchableOpacity
             key={layout.id}
             style={styles.button}
             name={layout.name}
-            onPress={() => setCurrentLayout(layout.layout)}
+            onPress={() => {
+              if (ref.current) {
+                ref.current.animateNextTransition();
+              }
+              setCurrentLayout(layout.layout);
+            }}
           >
             <Text style={styles.buttonText}>{layout.name}</Text>
           </TouchableOpacity>
@@ -95,7 +109,7 @@ export const TransitionScreen = () => {
 
 const Card = ({ currentLayout }) => {
   const [color, setColor] = React.useState('');
-  const [cardWidth, setCardWidth] = React.useState(null);
+  const [height, setHeight] = React.useState(null);
 
   React.useEffect(() => {
     const red = Math.floor(Math.random() * 256);
@@ -106,17 +120,11 @@ const Card = ({ currentLayout }) => {
 
   return (
     <View
-      style={
-        [styles.card,
-        currentLayout.child,
-        {
-          backgroundColor: color,
-          height: cardWidth * 2 / 3
-        }]
-      }
+      style={[styles.card, currentLayout.child,
+      { backgroundColor: color, height }]}
       onLayout={
         ({ nativeEvent }) =>
-          setCardWidth(nativeEvent.layout.width)
+          setHeight(nativeEvent.layout.width * 2 / 3)
       }
     ></View>
   );
