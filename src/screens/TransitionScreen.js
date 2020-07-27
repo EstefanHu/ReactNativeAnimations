@@ -9,12 +9,22 @@ import {
 } from 'react-native';
 
 const { width } = Dimensions.get('window');
-const MARGIN = 10;
+const MARGIN = 5;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'green',
+  },
+  card: {
+    borderRadius: 15,
+    marginHorizontal: MARGIN,
+    marginVertical: 5,
+    flex: 1,
+    height: 200,
+  },
+  button: {
+    padding: 15,
+    width,
   }
 });
 
@@ -44,6 +54,7 @@ const wrap = {
     container: {
       flexDirection: 'row',
       alignItems: 'center',
+      flexWrap: 'wrap'
     },
     child: {
       flex: 0,
@@ -52,49 +63,60 @@ const wrap = {
   }
 }
 
-const currentLayout = wrap.layout;
+const layouts = [column, row, wrap];
 
 export const TransitionScreen = () => {
-  console.log('hello');
+  const [currentLayout, setCurrentLayout] = React.useState(layouts[0].layout);
+
+  console.log(currentLayout)
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={[styles.container, currentLayout.container]}>
-        <Card />
-        <Card />
-        <Card />
-        <View>
-          <Text>Testing</Text>
-        </View>
+        <Card currentLayout={currentLayout} />
+        <Card currentLayout={currentLayout} />
+        <Card currentLayout={currentLayout} />
+      </View>
+      <View style={{ width, justifyContent: 'center', alignItems: 'center' }}>
+        {layouts.map(layout => (
+          <TouchableOpacity
+            key={layout.id}
+            style={styles.button}
+            name={layout.name}
+            onPress={() => setCurrentLayout(layout.layout)}
+          >
+            <Text style={styles.buttonText}>{layout.name}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
     </SafeAreaView>
   );
 };
 
-const Card = () => {
+const Card = ({ currentLayout }) => {
   const [color, setColor] = React.useState('');
+  const [cardWidth, setCardWidth] = React.useState(null);
 
   React.useEffect(() => {
     const red = Math.floor(Math.random() * 256);
     const green = Math.floor(Math.random() * 256);
     const blue = Math.floor(Math.random() * 256);
-    console.log(red)
-    console.log('CARD')
     setColor(`rgb(${red},${green},${blue})`);
   }, []);
 
   return (
     <View
       style={
-        [
-          {
-            backgroundColor: color,
-            borderRadius: 15,
-            margin: MARGIN,
-            flex: 1,
-          },
-          currentLayout.child
-        ]
+        [styles.card,
+        currentLayout.child,
+        {
+          backgroundColor: color,
+          height: cardWidth * 2 / 3
+        }]
+      }
+      onLayout={
+        ({ nativeEvent }) =>
+          setCardWidth(nativeEvent.layout.width)
       }
     ></View>
   );
