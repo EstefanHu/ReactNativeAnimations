@@ -11,18 +11,13 @@ import {
   Transition,
   Transitioning,
 } from "react-native-reanimated";
+import { Card } from './../components/Card.js';
 
 const { width } = Dimensions.get('window');
 const MARGIN = 5;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
-  card: {
-    borderRadius: 15,
-    marginHorizontal: MARGIN,
-    marginVertical: 5,
     flex: 1,
   },
   button: {
@@ -104,28 +99,5 @@ export const TransitionScreen = () => {
         ))}
       </View>
     </SafeAreaView>
-  );
-};
-
-const Card = ({ currentLayout }) => {
-  const [color, setColor] = React.useState('');
-  const [height, setHeight] = React.useState(null);
-
-  React.useEffect(() => {
-    const red = Math.floor(Math.random() * 256);
-    const green = Math.floor(Math.random() * 256);
-    const blue = Math.floor(Math.random() * 256);
-    setColor(`rgb(${red},${green},${blue})`);
-  }, []);
-
-  return (
-    <View
-      style={[styles.card, currentLayout.child,
-      { backgroundColor: color, height }]}
-      onLayout={
-        ({ nativeEvent }) =>
-          setHeight(nativeEvent.layout.width * 2 / 3)
-      }
-    ></View>
   );
 };

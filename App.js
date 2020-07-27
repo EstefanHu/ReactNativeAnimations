@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { HomeScreen } from './src/screens/HomeScreen.js';
 import { TransitionScreen } from './src/screens/TransitionScreen.js';
+import { UseTransitionScreen } from './src/screens/UseTransitionScreen.js';
 
 const Stack = createStackNavigator();
 
@@ -15,11 +16,15 @@ const App = () => {
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{ header: () => null }}
-          initialRouteName={'TransitionScreen'}
+          initialRouteName={'UseTransitionScreen'}
         >
           <Stack.Screen
             name='HomeScreen'
             component={HomeScreen}
+          />
+          <Stack.Screen
+            name='UseTransitionScreen'
+            component={UseTransitionScreen}
           />
           <Stack.Screen
             name='TransitionScreen'
